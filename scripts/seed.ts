@@ -91,7 +91,19 @@ async function main() {
     },
   });
 
-  console.log({ originalAdmin, testAdmin, testUser, seedKamus, seedStandar, seedScenario });
+  // Seed Project for E2E tests
+  const seedProject = await prisma.project.upsert({
+    where: { id: 'seed-project-1' },
+    update: {},
+    create: {
+      id: 'seed-project-1',
+      name: 'Seed Project',
+      description: 'A seed project for E2E testing',
+      status: 'draft',
+    },
+  });
+
+  console.log({ originalAdmin, testAdmin, testUser, seedKamus, seedStandar, seedScenario, seedProject });
 }
 
 main()
