@@ -48,9 +48,11 @@ model User {
   password      String?   // Hashed password for Credentials provider
   role          String    @default("user") // "user" | "admin"
   is_approved   Boolean   @default(false)  // Approval logic replacement
-  
-  accounts      Account[]
-  sessions      Session[]
+
+  accounts             Account[]
+  sessions             Session[]
+  assessorAssignments  AssessorAssignment[]
+  notifications        Notification[]
 }
 
 model VerificationToken {
@@ -83,4 +85,52 @@ model Scenario {
   content   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  status      String   @default("draft")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  assessorAssignments AssessorAssignment[]
+  invitations         Invitation[]
+}
+
+model AssessorAssignment {
+  id         String   @id @default(cuid())
+  projectId  String
+  assessorId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  project  Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assessor User    @relation(fields: [assessorId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, assessorId])
+}
+
+model Invitation {
+  id        String   @id @default(cuid())
+  projectId String
+  email     String
+  status    String   @default("pending") // "pending" | "accepted" | "expired"
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String   // "assessor_assigned" | "invitation_sent"
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
