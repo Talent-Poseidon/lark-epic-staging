@@ -96,7 +96,7 @@ export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Skip logging for static/internal routes
-  const isProtectedRoute = pathname.startsWith("/dashboard") || pathname.startsWith("/admin") || pathname.startsWith("/master-data-setup");
+  const isProtectedRoute = pathname.startsWith("/dashboard") || pathname.startsWith("/admin") || pathname.startsWith("/master-data-setup") || pathname.startsWith("/project-management");
   const isAuthRoute = pathname.startsWith("/auth");
 
   if (!isProtectedRoute && !isAuthRoute) {

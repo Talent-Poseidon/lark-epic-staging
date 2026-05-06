@@ -103,7 +103,46 @@ async function main() {
     },
   });
 
-  console.log({ originalAdmin, testAdmin, testUser, seedKamus, seedStandar, seedScenario, seedProject });
+  // Seed AssessorAssignment for E2E tests
+  const seedAssignment = await prisma.assessorAssignment.upsert({
+    where: { id: 'seed-assignment-1' },
+    update: {},
+    create: {
+      id: 'seed-assignment-1',
+      projectId: 'seed-project-1',
+      assessorId: testUser.id,
+    },
+  });
+
+  // Seed Invitation for E2E tests (expires in 7 days)
+  const invitationExpiry = new Date();
+  invitationExpiry.setDate(invitationExpiry.getDate() + 7);
+  const seedInvitation = await prisma.invitation.upsert({
+    where: { id: 'seed-invitation-1' },
+    update: {},
+    create: {
+      id: 'seed-invitation-1',
+      projectId: 'seed-project-1',
+      email: 'participant@example.com',
+      status: 'pending',
+      expiresAt: invitationExpiry,
+    },
+  });
+
+  // Seed Notification for E2E tests
+  const seedNotification = await prisma.notification.upsert({
+    where: { id: 'seed-notification-1' },
+    update: {},
+    create: {
+      id: 'seed-notification-1',
+      userId: testUser.id,
+      type: 'assessor_assigned',
+      message: 'You have been assigned as assessor for project "Seed Project"',
+      read: false,
+    },
+  });
+
+  console.log({ originalAdmin, testAdmin, testUser, seedKamus, seedStandar, seedScenario, seedProject, seedAssignment, seedInvitation, seedNotification });
 }
 
 main()
