@@ -59,7 +59,14 @@ export async function signUpWithEmail(formData: FormData) {
 }
 
 export async function signInWithGoogle() {
-  await signIn("google", { redirectTo: "/dashboard" });
+  try {
+    await signIn("google", { redirectTo: "/dashboard" });
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return { error: "Something went wrong with Google sign in." };
+    }
+    throw error;
+  }
 }
 
 export async function signOutAction() {
