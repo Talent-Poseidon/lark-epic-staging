@@ -58,7 +58,40 @@ async function main() {
     },
   });
 
-  console.log({ originalAdmin, testAdmin, testUser });
+  // Seed Kamus for E2E tests
+  const seedKamus = await prisma.kamus.upsert({
+    where: { id: 'seed-kamus-1' },
+    update: {},
+    create: {
+      id: 'seed-kamus-1',
+      name: 'Seed Kamus',
+      template: 'default',
+    },
+  });
+
+  // Seed Standar for E2E tests
+  const seedStandar = await prisma.standar.upsert({
+    where: { id: 'seed-standar-1' },
+    update: {},
+    create: {
+      id: 'seed-standar-1',
+      name: 'Seed Standar',
+      content: 'default',
+    },
+  });
+
+  // Seed Scenario for E2E tests
+  const seedScenario = await prisma.scenario.upsert({
+    where: { id: 'seed-scenario-1' },
+    update: {},
+    create: {
+      id: 'seed-scenario-1',
+      name: 'Seed Scenario',
+      content: 'default',
+    },
+  });
+
+  console.log({ originalAdmin, testAdmin, testUser, seedKamus, seedStandar, seedScenario });
 }
 
 main()
